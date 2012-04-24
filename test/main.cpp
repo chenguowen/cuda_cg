@@ -20,15 +20,26 @@ void cg(csr_matrix<IndexType, ValueType> A, vec<IndexType, ValueType> x,
 
 int main(int argc, char **argv)
 {
-  cout << "CUDA CG Solver test." << endl << endl;
+  if (argc != 2)
+  {
+    cerr << "Usage: ./test <input number (1-6)>";
+    exit(-1);
+  }
+
+  string prefix = "input/input-";
+  prefix = prefix + argv[1];
+  
+  cout << "CUDA CG Solver test." << endl;
+  cout << "Using " << prefix << endl << endl;
+ 
 
   cout << "Reading in matrix" << endl;
-  csr_matrix<int,double> A = read_csr_matrix<int,double>("input/A", true);
+  csr_matrix<int,double> A = read_csr_matrix<int,double>((prefix+"/A").c_str(), true);
   csr_c_to_fortran(A);
   cout << "Reading in RHS vector" << endl;
-  vec<int,double> b = read_vec<int,double>("input/b");
+  vec<int,double> b = read_vec<int,double>((prefix+"/b").c_str());
   cout << "Reading in reference solution vector" << endl;
-  vec<int,double> x = read_vec<int,double>("input/x");
+  vec<int,double> x = read_vec<int,double>((prefix+"/x").c_str());
 
   cout << "Calling solver" << endl;
   vec<int,double> res = new_vec<int,double>(x.len);
